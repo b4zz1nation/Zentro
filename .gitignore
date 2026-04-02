@@ -1,0 +1,42 @@
+# Root
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies and builds
+node_modules/
+.next/
+dist/
+build/
+coverage/
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+
+# App-specific
+web-next/node_modules/
+web-next/.next/
+web-next/.env.local
+web-next/.env*
+!web-next/.env.example
+web-next/.git-backup/
+
+web/node_modules/
+web/dist/
+
+# Supabase temp files
+supabase/.temp/

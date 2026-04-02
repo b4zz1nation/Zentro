@@ -11,6 +11,7 @@ Use this as the working plan for approval and delivery. Each phase should be rev
 - Phase 1 and Phase 2 deliverables drafted and ready for approval review
 - Phase 2 implementation started with a `Vite + React + TypeScript` app in `web/`
 - Phase 2 implementation now has a `Next.js + TypeScript + Tailwind` app in `web-next/`
+- Phase 3 backend baseline started and initial Supabase schema has been pushed
 
 ## Overall Sequence
 
@@ -129,32 +130,32 @@ Create the base application and deployment setup.
 Build the multi-tenant backend correctly before feature modules expand.
 
 ### Checklist
-- [ ] Finalize core schema
-- [ ] Create migrations
-- [ ] Add tenant and branch ownership to all major records
-- [ ] Set up Supabase Row Level Security
-- [ ] Implement workspace isolation policies
+- [x] Finalize core schema
+- [x] Create migrations
+- [x] Add tenant and branch ownership to all major records
+- [x] Set up Supabase Row Level Security
+- [x] Implement workspace isolation policies
 - [ ] Implement branch restriction rules
-- [ ] Decide whether membership status is live or cached
-- [ ] Decide whether plans and passes are separate or unified models
+- [x] Decide whether membership status is live or cached
+- [x] Decide whether plans and passes are separate or unified models
 - [ ] Implement membership status utility/service
 - [ ] Implement audit logging strategy
 - [ ] Add protected mutation checks
 
 ### Core Tables
-- [ ] tenants
-- [ ] branches
-- [ ] users
-- [ ] user_roles
-- [ ] members
-- [ ] membership_plans
-- [ ] member_memberships
-- [ ] passes
-- [ ] checkins
-- [ ] payments
-- [ ] invitations
-- [ ] notifications
-- [ ] audit_logs
+- [x] tenants
+- [x] branches
+- [x] users
+- [x] user_roles
+- [x] members
+- [x] membership_plans
+- [x] member_memberships
+- [x] passes
+- [x] checkins
+- [x] payments
+- [x] invitations
+- [x] notifications
+- [x] audit_logs
 
 ### Deliverables
 - [ ] Production-ready schema draft
@@ -173,17 +174,17 @@ Build the multi-tenant backend correctly before feature modules expand.
 Allow gym owners and staff to securely access and set up their workspace.
 
 ### Checklist
-- [ ] Login flow
-- [ ] Logout flow
-- [ ] Forgot password flow
-- [ ] Protected routes
-- [ ] Role-based access setup
-- [ ] Workspace creation flow
-- [ ] First branch creation flow
-- [ ] Owner role assignment
-- [ ] Staff invitation flow
-- [ ] Invitation acceptance flow
-- [ ] Gym profile and initial settings flow
+- [x] Login flow
+- [x] Logout flow
+- [x] Forgot password flow
+- [x] Protected routes
+- [x] Role-based access setup
+- [x] Workspace creation flow
+- [x] First branch creation flow
+- [x] Owner role assignment
+- [x] Staff invitation flow
+- [x] Invitation acceptance flow
+- [x] Gym profile and initial settings flow
 
 ### Deliverables
 - [ ] Auth screens
@@ -226,21 +227,21 @@ Create the main authenticated experience and role-aware navigation.
 Enable core member operations and history tracking.
 
 ### Checklist
-- [ ] Create member
-- [ ] Edit member
-- [ ] Archive member
-- [ ] Search members
+- [x] Create member
+- [x] Edit member
+- [x] Archive member
+- [x] Search members
 - [ ] Filter members
-- [ ] Member profile view
-- [ ] Emergency contact and notes
-- [ ] Attendance history
-- [ ] Payment history
-- [ ] Membership history
+- [x] Member profile view
+- [x] Emergency contact and notes
+- [x] Attendance history
+- [x] Payment history
+- [x] Membership history
 - [ ] Member quick actions
 
 ### Deliverables
-- [ ] Members list page
-- [ ] Member detail page
+- [x] Members list page
+- [x] Member detail page
 - [ ] Member quick actions
 
 ### Approval Gate
@@ -254,12 +255,12 @@ Enable core member operations and history tracking.
 Support product management and correct live status behavior.
 
 ### Checklist
-- [ ] Create membership plans
+- [x] Create membership plans
 - [ ] Edit membership plans
 - [ ] Create passes
 - [ ] Edit passes
 - [ ] Support price, validity, branch access, usage limits, renewal rules, and extension rules
-- [ ] Assign membership to member
+- [x] Assign membership to member
 - [ ] Assign pass to member
 - [ ] Build renewal flow
 - [ ] Build extension flow
@@ -278,7 +279,7 @@ Support product management and correct live status behavior.
 - [ ] Trial
 
 ### Deliverables
-- [ ] Plan management pages
+- [x] Plan management pages
 - [ ] Pass management pages
 - [ ] Status computation utilities
 - [ ] Renewal workflow
