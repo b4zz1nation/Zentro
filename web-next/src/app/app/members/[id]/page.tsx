@@ -1,5 +1,11 @@
 import { PageHeader } from "@/components/app-shell/page-header";
-import { assignMembershipAction } from "@/app/app/members/[id]/membership-actions";
+import {
+  assignMembershipAction,
+  freezeMembershipAction,
+  reactivateMembershipAction,
+  renewMembershipAction,
+  suspendMembershipAction,
+} from "@/app/app/members/[id]/membership-actions";
 import {
   archiveMemberAction,
   updateMemberAction,
@@ -7,6 +13,8 @@ import {
 import { PhoneField } from "@/components/forms/phone-field";
 import { requireRole } from "@/lib/auth/guards";
 import { listWorkspaceBranches } from "@/lib/invitations/service";
+import { getLatestMemberMembership } from "@/lib/memberships/service";
+import { computeMembershipStatus } from "@/lib/memberships/status";
 import { listPlans } from "@/lib/plans/service";
 import {
   getMemberById,
@@ -27,25 +35,22 @@ export default async function MemberDetailPage({
   const context = await requireRole(["gym_owner", "staff", "super_admin"]);
   const { id } = await params;
   const { success, error } = await searchParams;
-  const member = context.workspaceId
-    ? await getMemberById(id, context.workspaceId)
-    : null;
-  const branches = context.workspaceId
-    ? await listWorkspaceBranches(context.workspaceId)
-    : [];
-  const plans = context.workspaceId ? await listPlans(context.workspaceId) : [];
-  const checkins =
+  const [member, branches, plans, currentMembership] = context.workspaceId
+    ? await Promise.all([
+        getMemberById(id, context.workspaceId),
+        listWorkspaceBranches(context.workspaceId),
+        listPlans(context.workspaceId),
+        getLatestMemberMembership(context.workspaceId, id),
+      ])
+    : [null, [], [], null];
+  const [checkins, payments, memberships] =
     context.workspaceId && member
-      ? await listMemberCheckins(context.workspaceId, member.id)
-      : [];
-  const payments =
-    context.workspaceId && member
-      ? await listMemberPayments(context.workspaceId, member.id)
-      : [];
-  const memberships =
-    context.workspaceId && member
-      ? await listMemberMembershipHistory(context.workspaceId, member.id)
-      : [];
+      ? await Promise.all([
+          listMemberCheckins(context.workspaceId, member.id),
+          listMemberPayments(context.workspaceId, member.id),
+          listMemberMembershipHistory(context.workspaceId, member.id),
+        ])
+      : [[], [], []];
 
   return (
     <div className="space-y-6">
@@ -229,6 +234,114 @@ export default async function MemberDetailPage({
           </section>
 
           <section className="space-y-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-semibold text-slate-950">
+                Membership lifecycle
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Manage the latest membership state for this member without
+                leaving the detail view.
+              </p>
+              {currentMembership ? (
+                <div className="mt-5 space-y-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                    <p className="text-sm font-semibold text-slate-950">
+                      {currentMembership.membership_plans?.name ?? "Membership"}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-600">
+                      {computeMembershipStatus({
+                        status: currentMembership.status,
+                        paymentStatus: currentMembership.payment_status,
+                        startAt: currentMembership.start_at,
+                        endAt: currentMembership.end_at,
+                      }).replaceAll("_", " ")}{" "}
+                      | {currentMembership.start_at.slice(0, 10)} to{" "}
+                      {currentMembership.end_at.slice(0, 10)}
+                    </p>
+                    {currentMembership.status_reason ? (
+                      <p className="mt-2 text-sm text-slate-500">
+                        {currentMembership.status_reason}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <form action={renewMembershipAction}>
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <input
+                        type="hidden"
+                        name="membershipId"
+                        value={currentMembership.id}
+                      />
+                      <button
+                        type="submit"
+                        className="w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white"
+                      >
+                        Renew membership
+                      </button>
+                    </form>
+                    <form action={suspendMembershipAction}>
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <input
+                        type="hidden"
+                        name="membershipId"
+                        value={currentMembership.id}
+                      />
+                      <button
+                        type="submit"
+                        className="w-full rounded-full border border-amber-200 px-5 py-3 text-sm font-semibold text-amber-700 transition hover:bg-amber-50"
+                      >
+                        Suspend
+                      </button>
+                    </form>
+                    <form action={freezeMembershipAction} className="space-y-3">
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <input
+                        type="hidden"
+                        name="membershipId"
+                        value={currentMembership.id}
+                      />
+                      <label className="block space-y-2">
+                        <span className="text-sm font-medium text-slate-700">
+                          Freeze days
+                        </span>
+                        <input
+                          name="freezeDays"
+                          type="number"
+                          min="1"
+                          max="30"
+                          defaultValue="7"
+                          className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-cyan-500 focus:bg-white"
+                        />
+                      </label>
+                      <button
+                        type="submit"
+                        className="w-full rounded-full border border-cyan-200 px-5 py-3 text-sm font-semibold text-cyan-700 transition hover:bg-cyan-50"
+                      >
+                        Freeze
+                      </button>
+                    </form>
+                    <form action={reactivateMembershipAction}>
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <input
+                        type="hidden"
+                        name="membershipId"
+                        value={currentMembership.id}
+                      />
+                      <button
+                        type="submit"
+                        className="w-full rounded-full border border-emerald-200 px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
+                      >
+                        Reactivate
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-5 rounded-2xl border border-dashed border-slate-300 px-4 py-4 text-sm text-slate-500">
+                  No membership assigned yet.
+                </div>
+              )}
+            </div>
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-slate-950">
                 Assign membership

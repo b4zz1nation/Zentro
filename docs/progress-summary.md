@@ -1,6 +1,6 @@
 # Progress Summary
 
-## As Of 2026-04-02
+## As Of 2026-04-03
 
 ## Phase 1 Status
 Phase 1 planning is complete and ready for approval.
@@ -119,12 +119,93 @@ Phase 7 has started with the membership-plan vertical slice.
 Completed implementation:
 - create membership plans
 - list membership plans
+- edit membership plans in a modal
+- delete membership plans with assignment protection
 - assign a membership plan to a member
-- basic membership status utility for member history display
+- membership lifecycle actions on member detail:
+  - renew
+  - freeze
+  - suspend
+  - reactivate
+- membership lifecycle service backed by `member_memberships` and `membership_events`
+- basic membership status utility for member history display and check-in validation
 
 Not completed yet:
-- edit membership plans
 - passes CRUD
 - pass assignment
-- renewal, extension, suspension, freeze, and reactivation flows
+- extension flow
 - full live membership status engine
+
+## Phase 8 Status
+Phase 8 has started with the manual front-desk path.
+
+Completed implementation:
+- branch-aware manual member search on `/app/checkins`
+- manual check-in action with backend validation
+- validation against active memberships and active passes
+- branch access validation for scoped plans and passes
+- success and failure check-ins are both recorded
+- recent check-in log on the check-in page
+
+Not completed yet:
+- QR check-in flow
+- browser camera support
+- richer validation result presentation
+- dedicated front-desk optimized QR/manual combined workflow
+
+## Phase 9 Status
+Phase 9 has started with a manual payment recording baseline.
+
+Completed implementation:
+- searchable member payment entry on `/app/payments`
+- manual payment recording tied to members
+- optional linkage to the member's latest membership
+- automatic membership payment status update to `paid` when linked
+- recent payment ledger on the payments page
+- existing member detail payment history now surfaces real payment records
+
+Not completed yet:
+- pass sale linkage
+- dedicated renewal checkout flow
+- receipt generation or printable output
+- richer revenue summaries and filters
+
+## Phase 12 Status
+Phase 12 has started with a first hardening baseline.
+
+Completed implementation:
+- added unit test baseline with Vitest
+- added coverage for membership status rules
+- added coverage for phone formatting helpers
+- added coverage for fixed plan presets
+- added basic security headers in Next.js config
+- added a QA and hardening runbook
+
+Not completed yet:
+- tenant isolation integration tests
+- role-based access integration tests
+- check-in edge-case integration tests
+- responsive test sweep
+- audit log verification
+
+## Phase 13 Status
+Phase 13 has started in documentation and readiness form only.
+
+Completed implementation:
+- added pilot deployment runbook
+- added pilot onboarding checklist
+- documented Vercel and Supabase launch steps in the repo
+
+Not completed yet:
+- real Vercel project connection
+- production environment configuration in Vercel
+- actual pilot rollout to gyms
+
+## Phase 14 Status
+Phase 14 is documented as a post-launch backlog, not implemented.
+
+Completed implementation:
+- added post-launch improvement backlog document
+
+Not completed yet:
+- all product follow-up work remains pending real pilot feedback

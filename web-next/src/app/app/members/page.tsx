@@ -17,13 +17,13 @@ type MembersPageProps = {
 export default async function MembersPage({ searchParams }: MembersPageProps) {
   const context = await requireRole(["gym_owner", "staff", "super_admin"]);
   const { error, q } = await searchParams;
-  const branches = context.workspaceId
-    ? await listWorkspaceBranches(context.workspaceId)
-    : [];
-  const plans = context.workspaceId ? await listPlans(context.workspaceId) : [];
-  const members = context.workspaceId
-    ? await listMembers(context.workspaceId, q)
-    : [];
+  const [branches, plans, members] = context.workspaceId
+    ? await Promise.all([
+        listWorkspaceBranches(context.workspaceId),
+        listPlans(context.workspaceId),
+        listMembers(context.workspaceId, q),
+      ])
+    : [[], [], []];
 
   return (
     <div className="space-y-6">

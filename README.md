@@ -195,6 +195,13 @@ cd web-next
 npm run build
 ```
 
+Test:
+
+```powershell
+cd web-next
+npm run test
+```
+
 Push Supabase migrations:
 
 ```powershell
@@ -209,8 +216,25 @@ Planning and progress docs are in:
 - `docs/phase-0/`
 - `docs/phase-1/`
 - `docs/phase-2/`
+- `docs/phase-12/`
+- `docs/phase-13/`
+- `docs/phase-14/`
 - `docs/progress-summary.md`
 - `implementation-checklist.md`
+
+## Deployment Notes
+
+For pilot deployment:
+
+1. Create a Vercel project from this repo
+2. Set the root directory to `web-next`
+3. Add the required environment variables
+4. Push Supabase migrations from the repo root
+
+Detailed runbooks:
+
+- `docs/phase-13/pilot-deployment.md`
+- `docs/phase-13/pilot-onboarding-checklist.md`
 
 ## Current Notes
 

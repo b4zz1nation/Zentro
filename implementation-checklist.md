@@ -102,8 +102,8 @@ Create the base application and deployment setup.
 ### Checklist
 - [x] Initialize Next.js app
 - [x] Configure Tailwind
-- [ ] Configure Supabase project access
-- [ ] Configure environment variables
+- [x] Configure Supabase project access
+- [x] Configure environment variables
 - [ ] Connect Vercel project
 - [x] Add linting and formatting
 - [x] Define folder structure
@@ -138,7 +138,7 @@ Build the multi-tenant backend correctly before feature modules expand.
 - [ ] Implement branch restriction rules
 - [x] Decide whether membership status is live or cached
 - [x] Decide whether plans and passes are separate or unified models
-- [ ] Implement membership status utility/service
+- [x] Implement membership status utility/service
 - [ ] Implement audit logging strategy
 - [ ] Add protected mutation checks
 
@@ -159,8 +159,8 @@ Build the multi-tenant backend correctly before feature modules expand.
 
 ### Deliverables
 - [ ] Production-ready schema draft
-- [ ] RLS policies
-- [ ] Core service utilities
+- [x] RLS policies
+- [x] Core service utilities
 - [ ] Backend rules document
 
 ### Approval Gate
@@ -187,9 +187,9 @@ Allow gym owners and staff to securely access and set up their workspace.
 - [x] Gym profile and initial settings flow
 
 ### Deliverables
-- [ ] Auth screens
-- [ ] Onboarding wizard
-- [ ] Invitation system
+- [x] Auth screens
+- [x] Onboarding wizard
+- [x] Invitation system
 
 ### Approval Gate
 - [ ] Phase 4 approved
@@ -202,19 +202,19 @@ Allow gym owners and staff to securely access and set up their workspace.
 Create the main authenticated experience and role-aware navigation.
 
 ### Checklist
-- [ ] Build sidebar and topbar
-- [ ] Add responsive app layout
+- [x] Build sidebar and topbar
+- [x] Add responsive app layout
 - [ ] Add role-aware navigation
 - [ ] Add branch-aware filtering
-- [ ] Add dashboard summary cards
-- [ ] Add recent activity section
+- [x] Add dashboard summary cards
+- [x] Add recent activity section
 
 ### Dashboard Widgets
-- [ ] Active members
+- [x] Active members
 - [ ] Expiring soon
-- [ ] Today's check-ins
-- [ ] Today's revenue
-- [ ] Recent payments
+- [x] Today's check-ins
+- [x] Today's revenue
+- [x] Recent payments
 
 ### Approval Gate
 - [ ] Phase 5 approved
@@ -256,33 +256,33 @@ Support product management and correct live status behavior.
 
 ### Checklist
 - [x] Create membership plans
-- [ ] Edit membership plans
+- [x] Edit membership plans
 - [ ] Create passes
 - [ ] Edit passes
-- [ ] Support price, validity, branch access, usage limits, renewal rules, and extension rules
+- [x] Support price, validity, branch access, usage limits, renewal rules, and extension rules
 - [x] Assign membership to member
 - [ ] Assign pass to member
-- [ ] Build renewal flow
+- [x] Build renewal flow
 - [ ] Build extension flow
-- [ ] Support suspension
-- [ ] Support freeze
-- [ ] Support reactivation
-- [ ] Compute live membership status correctly
+- [x] Support suspension
+- [x] Support freeze
+- [x] Support reactivation
+- [x] Compute live membership status correctly
 
 ### Statuses
-- [ ] Active
-- [ ] Expired
-- [ ] Inactive
-- [ ] Suspended
-- [ ] Frozen
-- [ ] Pending payment
-- [ ] Trial
+- [x] Active
+- [x] Expired
+- [x] Inactive
+- [x] Suspended
+- [x] Frozen
+- [x] Pending payment
+- [x] Trial
 
 ### Deliverables
 - [x] Plan management pages
 - [ ] Pass management pages
-- [ ] Status computation utilities
-- [ ] Renewal workflow
+- [x] Status computation utilities
+- [x] Renewal workflow
 
 ### Approval Gate
 - [ ] Phase 7 approved
@@ -296,20 +296,20 @@ Allow staff to validate and record member access quickly.
 
 ### Checklist
 - [ ] Build QR check-in flow
-- [ ] Build manual check-in flow
+- [x] Build manual check-in flow
 - [ ] Add browser camera support for QR scanning
-- [ ] Add manual member search by ID, name, phone, or email
-- [ ] Validate membership or pass on check-in
-- [ ] Validate branch access rules on check-in
-- [ ] Record successful check-in
-- [ ] Show failed validation result and reason
-- [ ] Show recent check-in history
+- [x] Add manual member search by ID, name, phone, or email
+- [x] Validate membership or pass on check-in
+- [x] Validate branch access rules on check-in
+- [x] Record successful check-in
+- [x] Show failed validation result and reason
+- [x] Show recent check-in history
 
 ### Deliverables
-- [ ] Check-in page
+- [x] Check-in page
 - [ ] Browser QR scanner
-- [ ] Validation result state
-- [ ] Recent check-in log
+- [x] Validation result state
+- [x] Recent check-in log
 
 ### Approval Gate
 - [ ] Phase 8 approved
@@ -322,19 +322,19 @@ Allow staff to validate and record member access quickly.
 Support sales and payment recording tied to members and products.
 
 ### Checklist
-- [ ] Record membership sale
+- [x] Record membership sale
 - [ ] Record pass sale
-- [ ] Record renewal payment
-- [ ] Save payment history
-- [ ] Save receipt reference number
-- [ ] Connect payments to members
-- [ ] Connect payments to plans or passes
-- [ ] Show revenue records
-- [ ] Add member payment history view
+- [x] Record renewal payment
+- [x] Save payment history
+- [x] Save receipt reference number
+- [x] Connect payments to members
+- [x] Connect payments to plans or passes
+- [x] Show revenue records
+- [x] Add member payment history view
 
 ### Deliverables
-- [ ] Payment recording UI
-- [ ] Member payment history
+- [x] Payment recording UI
+- [x] Member payment history
 - [ ] Sales flow
 
 ### Approval Gate
@@ -376,18 +376,18 @@ Provide basic operational and revenue visibility.
 Allow workspace-level configuration and staff management.
 
 ### Checklist
-- [ ] Workspace profile settings
+- [x] Workspace profile settings
 - [ ] Gym branding settings
 - [ ] Logo upload
 - [ ] Branch settings
-- [ ] Staff management
+- [x] Staff management
 - [ ] Staff role management
 - [ ] Permission management UI
 - [ ] QR settings
 - [ ] Audit log visibility
 
 ### Deliverables
-- [ ] Settings pages
+- [x] Settings pages
 - [ ] Permission management UI
 
 ### Approval Gate
@@ -403,14 +403,14 @@ Validate the system before pilot rollout.
 ### Checklist
 - [ ] Tenant isolation tests
 - [ ] Role-based access tests
-- [ ] Membership status edge case tests
+- [x] Membership status edge case tests
 - [ ] Renewal edge case tests
 - [ ] Check-in edge case tests
 - [ ] Responsive testing
 - [ ] RLS validation
 - [ ] Backend permission checks
 - [ ] Bug fixing pass
-- [ ] Release-readiness review
+- [x] Release-readiness review
 
 ### Approval Gate
 - [ ] Phase 12 approved
@@ -434,7 +434,7 @@ Launch the MVP to a small set of real gyms.
 ### Deliverables
 - [ ] Production deployment
 - [ ] Production Supabase setup
-- [ ] Pilot onboarding checklist
+- [x] Pilot onboarding checklist
 
 ### Approval Gate
 - [ ] Phase 13 approved

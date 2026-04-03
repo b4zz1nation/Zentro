@@ -17,10 +17,12 @@ type PlansPageProps = {
 export default async function PlansPage({ searchParams }: PlansPageProps) {
   const context = await requireRole(["gym_owner", "super_admin"]);
   const { error, success } = await searchParams;
-  const branches = context.workspaceId
-    ? await listWorkspaceBranches(context.workspaceId)
-    : [];
-  const plans = context.workspaceId ? await listPlans(context.workspaceId) : [];
+  const [branches, plans] = context.workspaceId
+    ? await Promise.all([
+        listWorkspaceBranches(context.workspaceId),
+        listPlans(context.workspaceId),
+      ])
+    : [[], []];
 
   return (
     <div className="space-y-6">
@@ -52,7 +54,11 @@ export default async function PlansPage({ searchParams }: PlansPageProps) {
           </p>
 
           <form action={createPlanAction} className="mt-6 space-y-5">
-            <PlanForm mode="create" branches={branches} submitLabel="Save plan" />
+            <PlanForm
+              mode="create"
+              branches={branches}
+              submitLabel="Save plan"
+            />
           </form>
         </section>
 

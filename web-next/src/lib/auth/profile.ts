@@ -1,4 +1,5 @@
 import type { User } from "@supabase/supabase-js";
+import { cache } from "react";
 import type { AppRole, AuthContext } from "@/lib/auth/types";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createReadOnlyClient } from "@/lib/supabase/server";
@@ -122,49 +123,51 @@ async function getPrimaryUserRole(profileId: string) {
   };
 }
 
-export async function getAuthContext(): Promise<AuthContext | null> {
-  const supabase = await createReadOnlyClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+export const getAuthContext = cache(
+  async function getAuthContext(): Promise<AuthContext | null> {
+    const supabase = await createReadOnlyClient();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-  if (error) {
-    const message = error.message.toLowerCase();
+    if (error) {
+      const message = error.message.toLowerCase();
 
-    // Missing or expired sessions should behave like signed-out state,
-    // not crash the route through the app error boundary.
-    if (
-      message.includes("auth session missing") ||
-      message.includes("session") ||
-      message.includes("jwt")
-    ) {
+      // Missing or expired sessions should behave like signed-out state,
+      // not crash the route through the app error boundary.
+      if (
+        message.includes("auth session missing") ||
+        message.includes("session") ||
+        message.includes("jwt")
+      ) {
+        return null;
+      }
+
+      throw new Error(`Failed to resolve authenticated user: ${error.message}`);
+    }
+
+    if (!user) {
       return null;
     }
 
-    throw new Error(`Failed to resolve authenticated user: ${error.message}`);
-  }
+    const profile = await getOrCreateUserProfile(user);
+    const primaryRole = await getPrimaryUserRole(profile.id);
 
-  if (!user) {
-    return null;
-  }
-
-  const profile = await getOrCreateUserProfile(user);
-  const primaryRole = await getPrimaryUserRole(profile.id);
-
-  return {
-    authUserId: user.id,
-    profileId: profile.id,
-    email: profile.email ?? user.email ?? null,
-    fullName: profile.full_name,
-    role: primaryRole?.role ?? "member",
-    workspaceId: primaryRole?.tenant_id,
-    workspaceName: primaryRole?.tenants?.name,
-    branchIds:
-      primaryRole?.branch_scope_type === "all"
-        ? []
-        : (primaryRole?.user_role_branches ?? []).map(
-            ({ branch_id }) => branch_id,
-          ),
-  };
-}
+    return {
+      authUserId: user.id,
+      profileId: profile.id,
+      email: profile.email ?? user.email ?? null,
+      fullName: profile.full_name,
+      role: primaryRole?.role ?? "member",
+      workspaceId: primaryRole?.tenant_id,
+      workspaceName: primaryRole?.tenants?.name,
+      branchIds:
+        primaryRole?.branch_scope_type === "all"
+          ? []
+          : (primaryRole?.user_role_branches ?? []).map(
+              ({ branch_id }) => branch_id,
+            ),
+    };
+  },
+);

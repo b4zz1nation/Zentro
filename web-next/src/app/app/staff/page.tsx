@@ -16,12 +16,12 @@ type StaffPageProps = {
 export default async function StaffPage({ searchParams }: StaffPageProps) {
   const context = await requireRole(["gym_owner", "super_admin"]);
   const { error, success } = await searchParams;
-  const branches = context.workspaceId
-    ? await listWorkspaceBranches(context.workspaceId)
-    : [];
-  const invitations = context.workspaceId
-    ? await listWorkspaceInvitations(context.workspaceId)
-    : [];
+  const [branches, invitations] = context.workspaceId
+    ? await Promise.all([
+        listWorkspaceBranches(context.workspaceId),
+        listWorkspaceInvitations(context.workspaceId),
+      ])
+    : [[], []];
 
   return (
     <div className="space-y-6">

@@ -1,21 +1,24 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { cache } from "react";
 import { env } from "@/lib/env";
 
-export async function createReadOnlyClient() {
-  const cookieStore = await cookies();
+export const createReadOnlyClient = cache(
+  async function createReadOnlyClient() {
+    const cookieStore = await cookies();
 
-  return createServerClient(env.supabaseUrl, env.supabasePublishableKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
+    return createServerClient(env.supabaseUrl, env.supabasePublishableKey, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll() {
+          // Server components can read auth cookies but cannot write them.
+        },
       },
-      setAll() {
-        // Server components can read auth cookies but cannot write them.
-      },
-    },
-  });
-}
+    });
+  },
+);
 
 export async function createActionClient() {
   const cookieStore = await cookies();
