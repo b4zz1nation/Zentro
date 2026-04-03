@@ -19,9 +19,12 @@ import { listPlans } from "@/lib/plans/service";
 import {
   getMemberById,
   listMemberCheckins,
+  listMemberPassHistory,
   listMemberMembershipHistory,
   listMemberPayments,
 } from "@/lib/members/service";
+import { listPasses } from "@/lib/passes/service";
+import { assignPassAction } from "@/app/app/passes/actions";
 
 type MemberDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -35,22 +38,25 @@ export default async function MemberDetailPage({
   const context = await requireRole(["gym_owner", "staff", "super_admin"]);
   const { id } = await params;
   const { success, error } = await searchParams;
-  const [member, branches, plans, currentMembership] = context.workspaceId
-    ? await Promise.all([
-        getMemberById(id, context.workspaceId),
-        listWorkspaceBranches(context.workspaceId),
-        listPlans(context.workspaceId),
-        getLatestMemberMembership(context.workspaceId, id),
-      ])
-    : [null, [], [], null];
-  const [checkins, payments, memberships] =
+  const [member, branches, plans, passes, currentMembership] =
+    context.workspaceId
+      ? await Promise.all([
+          getMemberById(id, context.workspaceId),
+          listWorkspaceBranches(context.workspaceId),
+          listPlans(context.workspaceId),
+          listPasses(context.workspaceId),
+          getLatestMemberMembership(context.workspaceId, id),
+        ])
+      : [null, [], [], [], null];
+  const [checkins, payments, memberships, passHistory] =
     context.workspaceId && member
       ? await Promise.all([
           listMemberCheckins(context.workspaceId, member.id),
           listMemberPayments(context.workspaceId, member.id),
           listMemberMembershipHistory(context.workspaceId, member.id),
+          listMemberPassHistory(context.workspaceId, member.id),
         ])
-      : [[], [], []];
+      : [[], [], [], []];
 
   return (
     <div className="space-y-6">
@@ -384,6 +390,46 @@ export default async function MemberDetailPage({
               )}
             </div>
 
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-semibold text-slate-950">
+                Assign pass
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Attach a pass for short-duration or usage-based access. Payment
+                starts as pending until the sale is recorded.
+              </p>
+              {passes.length === 0 ? (
+                <div className="mt-5 rounded-2xl border border-dashed border-slate-300 px-4 py-4 text-sm text-slate-500">
+                  No passes available yet. Create a pass first in `/app/passes`.
+                </div>
+              ) : (
+                <form action={assignPassAction} className="mt-5 space-y-4">
+                  <input type="hidden" name="memberId" value={member.id} />
+                  <select
+                    name="passId"
+                    defaultValue=""
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-cyan-500 focus:bg-white"
+                  >
+                    <option value="" disabled>
+                      Select a pass
+                    </option>
+                    {passes.map((pass) => (
+                      <option key={pass.id} value={pass.id}>
+                        {pass.name} | {pass.validity_value} {pass.validity_unit}
+                        {pass.validity_value === 1 ? "" : "s"}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="submit"
+                    className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white"
+                  >
+                    Assign pass
+                  </button>
+                </form>
+              )}
+            </div>
+
             {[
               {
                 title: "Membership history",
@@ -396,6 +442,10 @@ export default async function MemberDetailPage({
               {
                 title: "Attendance history",
                 items: checkins,
+              },
+              {
+                title: "Pass history",
+                items: passHistory,
               },
             ].map((section) => (
               <div

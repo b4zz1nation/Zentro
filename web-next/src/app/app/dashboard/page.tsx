@@ -3,9 +3,15 @@ import { MetricCard } from "@/components/app-shell/metric-card";
 import { PageHeader } from "@/components/app-shell/page-header";
 import { requireWorkspace } from "@/lib/auth/guards";
 import { getDashboardData } from "@/lib/dashboard/service";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const context = await requireWorkspace();
+
+  if (context.role === "member") {
+    redirect("/member/dashboard");
+  }
+
   const dashboard = await getDashboardData(context.workspaceId!);
   const metrics = [
     {

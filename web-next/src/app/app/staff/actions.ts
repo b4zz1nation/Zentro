@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth/guards";
 import { createStaffInvitation } from "@/lib/invitations/service";
+import { updateStaffRole } from "@/lib/staff/service";
 
 function encodeMessage(message: string) {
   return encodeURIComponent(message);
@@ -26,7 +27,9 @@ export async function createInvitationAction(formData: FormData) {
     .filter(Boolean);
 
   if (!email) {
-    redirect("/app/staff?error=" + encodeMessage("Invitation email is required."));
+    redirect(
+      "/app/staff?error=" + encodeMessage("Invitation email is required."),
+    );
   }
 
   if (branchScopeType === "selected" && branchIds.length === 0) {
@@ -47,11 +50,62 @@ export async function createInvitationAction(formData: FormData) {
 
     redirect(
       "/app/staff?success=" +
-        encodeMessage(`Invitation created. Share this link: ${result.inviteLink}`),
+        encodeMessage(
+          `Invitation created. Share this link: ${result.inviteLink}`,
+        ),
     );
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to create invitation.";
     redirect("/app/staff?error=" + encodeMessage(message));
   }
+}
+
+export async function updateStaffRoleAction(formData: FormData) {
+  const context = await requireRole(["gym_owner", "super_admin"]);
+
+  if (!context.workspaceId) {
+    redirect("/onboarding");
+  }
+
+  const roleId = String(formData.get("roleId") ?? "").trim();
+  const branchScopeType =
+    String(formData.get("branchScopeType") ?? "selected") === "all"
+      ? "all"
+      : "selected";
+  const status = String(formData.get("status") ?? "active").trim();
+  const branchIds = formData
+    .getAll("branchIds")
+    .map((value) => String(value))
+    .filter(Boolean);
+
+  if (
+    !roleId ||
+    (status !== "active" && status !== "inactive" && status !== "archived")
+  ) {
+    redirect("/app/staff?error=" + encodeMessage("Invalid staff role update."));
+  }
+
+  if (branchScopeType === "selected" && branchIds.length === 0) {
+    redirect(
+      "/app/staff?error=" +
+        encodeMessage("Select at least one branch or choose all branches."),
+    );
+  }
+
+  try {
+    await updateStaffRole({
+      roleId,
+      tenantId: context.workspaceId,
+      branchScopeType,
+      status,
+      branchIds,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to update staff role.";
+    redirect("/app/staff?error=" + encodeMessage(message));
+  }
+
+  redirect("/app/staff?success=" + encodeMessage("Staff role updated."));
 }

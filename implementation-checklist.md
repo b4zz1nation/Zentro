@@ -257,11 +257,11 @@ Support product management and correct live status behavior.
 ### Checklist
 - [x] Create membership plans
 - [x] Edit membership plans
-- [ ] Create passes
-- [ ] Edit passes
+- [x] Create passes
+- [x] Edit passes
 - [x] Support price, validity, branch access, usage limits, renewal rules, and extension rules
 - [x] Assign membership to member
-- [ ] Assign pass to member
+- [x] Assign pass to member
 - [x] Build renewal flow
 - [ ] Build extension flow
 - [x] Support suspension
@@ -280,7 +280,7 @@ Support product management and correct live status behavior.
 
 ### Deliverables
 - [x] Plan management pages
-- [ ] Pass management pages
+- [x] Pass management pages
 - [x] Status computation utilities
 - [x] Renewal workflow
 
@@ -348,22 +348,22 @@ Support sales and payment recording tied to members and products.
 Provide basic operational and revenue visibility.
 
 ### Checklist
-- [ ] Active members report
-- [ ] Expired members report
-- [ ] Daily check-ins report
-- [ ] Weekly check-ins report
-- [ ] Monthly check-ins report
-- [ ] Revenue by plan report
+- [x] Active members report
+- [x] Expired members report
+- [x] Daily check-ins report
+- [x] Weekly check-ins report
+- [x] Monthly check-ins report
+- [x] Revenue by plan report
 - [ ] Pass sales report
-- [ ] Branch performance report
-- [ ] Recent staff activity report
-- [ ] Date filters
-- [ ] Basic charts and tables
+- [x] Branch performance report
+- [x] Recent staff activity report
+- [x] Date filters
+- [x] Basic charts and tables
 
 ### Deliverables
-- [ ] Report pages
-- [ ] Date filtering
-- [ ] Basic analytics UI
+- [x] Report pages
+- [x] Date filtering
+- [x] Basic analytics UI
 
 ### Approval Gate
 - [ ] Phase 10 approved
@@ -379,16 +379,16 @@ Allow workspace-level configuration and staff management.
 - [x] Workspace profile settings
 - [ ] Gym branding settings
 - [ ] Logo upload
-- [ ] Branch settings
+- [x] Branch settings
 - [x] Staff management
-- [ ] Staff role management
-- [ ] Permission management UI
+- [x] Staff role management
+- [x] Permission management UI
 - [ ] QR settings
 - [ ] Audit log visibility
 
 ### Deliverables
 - [x] Settings pages
-- [ ] Permission management UI
+- [x] Permission management UI
 
 ### Approval Gate
 - [ ] Phase 11 approved

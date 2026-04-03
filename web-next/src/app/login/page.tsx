@@ -14,6 +14,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const context = await getAuthContext();
   const { error, next } = await searchParams;
 
+  if (context?.workspaceId && context.role === "member") {
+    redirect("/member/dashboard");
+  }
+
   if (context?.workspaceId) {
     redirect("/app/dashboard");
   }

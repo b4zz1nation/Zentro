@@ -209,3 +209,56 @@ Completed implementation:
 
 Not completed yet:
 - all product follow-up work remains pending real pilot feedback
+
+## Phase 10 Status
+Phase 10 has started with a live reporting baseline.
+
+Completed implementation:
+- date-range filtering on `/app/reports`
+- branch filter constrained by workspace role access
+- active members report
+- expired members report
+- daily, weekly, and monthly check-in summaries
+- revenue by plan report
+- branch performance report
+- recent staff activity report
+- basic visual bars and table-style report sections
+
+Not completed yet:
+- pass sales report
+- richer charting
+- export workflows
+
+## Passes Status
+The passes module is now implemented as a first real product slice.
+
+Completed implementation:
+- create passes
+- edit passes in a modal
+- delete passes with assignment protection
+- archive and status changes
+- branch-aware access scope
+- optional usage limits
+- assign passes to members
+- member pass history on member detail
+
+Not completed yet:
+- dedicated pass sales workflow
+- pass-focused analytics in reports
+
+## Phase 11 Status
+Phase 11 now has a practical admin baseline.
+
+Completed implementation:
+- workspace profile settings
+- branch creation and editing
+- branch status management
+- staff invitation flow
+- accepted-staff access management
+- branch-scope permission controls for staff roles
+
+Not completed yet:
+- logo upload
+- QR settings
+- audit log visibility
+- richer permission matrix beyond role status and branch scope

@@ -4,6 +4,7 @@ import { createReadOnlyClient } from "@/lib/supabase/server";
 export type MemberRecord = {
   id: string;
   tenant_id: string;
+  user_id: string | null;
   home_branch_id: string | null;
   external_member_code: string | null;
   first_name: string;
@@ -80,6 +81,42 @@ async function generateMemberCode(tenantId: string) {
   return `M-${String(maxNumber + 1).padStart(4, "0")}`;
 }
 
+async function findWorkspaceUserIdByEmail(tenantId: string, email?: string) {
+  const normalizedEmail = email?.trim().toLowerCase();
+
+  if (!normalizedEmail) {
+    return null;
+  }
+
+  const supabase = await createReadOnlyClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select(
+      `
+        id,
+        user_roles (
+          tenant_id
+        )
+      `,
+    )
+    .eq("email", normalizedEmail)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to resolve workspace user: ${error.message}`);
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const roles = Array.isArray(data.user_roles) ? data.user_roles : [];
+  const belongsToTenant = roles.some((role) => role.tenant_id === tenantId);
+
+  return belongsToTenant ? (data.id as string) : null;
+}
+
 export async function listMembers(tenantId: string, query?: string) {
   const supabase = await createReadOnlyClient();
   let builder = supabase
@@ -88,6 +125,7 @@ export async function listMembers(tenantId: string, query?: string) {
       `
         id,
         tenant_id,
+        user_id,
         home_branch_id,
         external_member_code,
         first_name,
@@ -144,6 +182,7 @@ export async function getMemberById(memberId: string, tenantId: string) {
       `
         id,
         tenant_id,
+        user_id,
         home_branch_id,
         external_member_code,
         first_name,
@@ -195,10 +234,12 @@ export async function createMember(input: {
   const externalMemberCode =
     input.externalMemberCode?.trim() ||
     (await generateMemberCode(input.tenantId));
+  const userId = await findWorkspaceUserIdByEmail(input.tenantId, input.email);
   const { data, error } = await supabase
     .from("members")
     .insert({
       tenant_id: input.tenantId,
+      user_id: userId,
       home_branch_id: input.homeBranchId || null,
       external_member_code: externalMemberCode,
       first_name: input.firstName.trim(),
@@ -242,9 +283,11 @@ export async function updateMember(input: {
   emergencyContactPhone?: string;
 }) {
   const supabase = await createReadOnlyClient();
+  const userId = await findWorkspaceUserIdByEmail(input.tenantId, input.email);
   const { error } = await supabase
     .from("members")
     .update({
+      user_id: userId,
       home_branch_id: input.homeBranchId || null,
       external_member_code: input.externalMemberCode || null,
       first_name: input.firstName.trim(),
@@ -405,6 +448,69 @@ export async function listMemberMembershipHistory(
         startAt: item.start_at,
         endAt: item.end_at,
       })} | ${item.start_at.slice(0, 10)} to ${item.end_at.slice(0, 10)}`,
+      created_at: item.start_at,
+    };
+  });
+}
+
+export async function listMemberPassHistory(
+  tenantId: string,
+  memberId: string,
+) {
+  const supabase = await createReadOnlyClient();
+  const { data, error } = await supabase
+    .from("member_passes")
+    .select(
+      `
+        id,
+        status,
+        payment_status,
+        start_at,
+        end_at,
+        remaining_uses,
+        passes (
+          name
+        )
+      `,
+    )
+    .eq("tenant_id", tenantId)
+    .eq("member_id", memberId)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    throw new Error(`Failed to load pass history: ${error.message}`);
+  }
+
+  return (
+    (data ?? []) as Array<{
+      id: string;
+      status: string;
+      payment_status: string;
+      start_at: string;
+      end_at: string;
+      remaining_uses: number | null;
+      passes: { name: string } | { name: string }[] | null;
+    }>
+  ).map((item): MemberHistoryItem => {
+    const pass = Array.isArray(item.passes) ? item.passes[0] : item.passes;
+
+    return {
+      id: item.id,
+      label: pass?.name || "Pass",
+      detail: `${membershipHistoryLabel({
+        status: item.status as
+          | "active"
+          | "expired"
+          | "inactive"
+          | "suspended"
+          | "frozen"
+          | "pending_payment"
+          | "trial",
+        paymentStatus: item.payment_status,
+        startAt: item.start_at,
+        endAt: item.end_at,
+      })} | ${item.remaining_uses ?? "unlimited"} use(s) remaining`,
       created_at: item.start_at,
     };
   });
